@@ -16,11 +16,6 @@ public class Pawn extends ChessPiece {
 		return "P";
 	}
 	
-	private boolean can(Position position) {
-		ChessPiece p = (ChessPiece) getBoard().piece(position);
-		return p== null || p.getColor() != this.getColor();
-	}
-	
 	@Override
 	public boolean[][] possibleMoves() {
 		boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getCols()];
@@ -30,23 +25,29 @@ public class Pawn extends ChessPiece {
 		if (this.getColor() == Color.WHITE) {
 			//forward
 			p.setValues(position.getRow() - 1, position.getCol());
-			if (getBoard().positionExists(p) && getBoard().piece(p) == null) mat[p.getRow()][p.getCol()] = true;
+			if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p)) mat[p.getRow()][p.getCol()] = true;
+			p.setValues(position.getRow() - 2, position.getCol());
+			Position p2 = new Position(position.getRow() - 1, position.getCol());
+			if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p) && !getBoard().thereIsAPiece(p2) && getMoveCount() == 0) mat[p.getRow()][p.getCol()] = true;
 			//capture-left
 			p.setValues(position.getRow() - 1, position.getCol() - 1);
-			if (getBoard().positionExists(p) && getBoard().piece(p) != null && ((ChessPiece) getBoard().piece(p)).getColor() != this.getColor()) mat[p.getRow()][p.getCol()] = true;
+			if (getBoard().positionExists(p) && isThereOpponentPiece(p)) mat[p.getRow()][p.getCol()] = true;
 			//capture-right
 			p.setValues(position.getRow() - 1, position.getCol() + 1);
-			if (getBoard().positionExists(p) && getBoard().piece(p) != null && ((ChessPiece) getBoard().piece(p)).getColor() != this.getColor()) mat[p.getRow()][p.getCol()] = true;
+			if (getBoard().positionExists(p) && isThereOpponentPiece(p)) mat[p.getRow()][p.getCol()] = true;
 		} else {
 			//backward
 			p.setValues(position.getRow() + 1, position.getCol());
-			if (getBoard().positionExists(p) && getBoard().piece(p) == null) mat[p.getRow()][p.getCol()] = true;
+			if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p)) mat[p.getRow()][p.getCol()] = true;
+			p.setValues(position.getRow() + 2, position.getCol());
+			Position p2 = new Position(position.getRow() + 1, position.getCol());
+			if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p) && !getBoard().thereIsAPiece(p2) && getMoveCount() == 0) mat[p.getRow()][p.getCol()] = true;
 			//capture-left
 			p.setValues(position.getRow() + 1, position.getCol() - 1);
-			if (getBoard().positionExists(p) && getBoard().piece(p) != null && ((ChessPiece) getBoard().piece(p)).getColor() != this.getColor()) mat[p.getRow()][p.getCol()] = true;
+			if (getBoard().positionExists(p) && isThereOpponentPiece(p)) mat[p.getRow()][p.getCol()] = true;
 			//capture-right
 			p.setValues(position.getRow() + 1, position.getCol() + 1);
-			if (getBoard().positionExists(p) && getBoard().piece(p) != null && ((ChessPiece) getBoard().piece(p)).getColor() != this.getColor()) mat[p.getRow()][p.getCol()] = true;			
+			if (getBoard().positionExists(p) && isThereOpponentPiece(p)) mat[p.getRow()][p.getCol()] = true;			
 		}
 		
 		return mat;
